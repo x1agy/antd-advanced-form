@@ -1,25 +1,66 @@
-import { createApiBaseQuery } from './../../core/axiosConfig';
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { AxiosError } from 'axios';
 
+import { AddValue, CommonResponse, ContactTypeList, CountryList } from '@/types';
+import { transformContactTypeListResponse, transformCountryListResponse } from '@/utils';
 
-  interface CommonResponse<TData> {
-    data: TData;
-    error: Error | null;
-  }
+import { createApiBaseQuery } from './../../core';
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: createApiBaseQuery(),
-  tagTypes: ['baseTag'],
+  tagTypes: ['countryTag', 'contactTypeTag'],
   endpoints: (builder) => ({
-    getCountryList: builder.query<string[], void>({
+    getCountryList: builder.query<CountryList, void>({
       query: () => ({
-        url: 'ant-forms/country/list',
+        url: 'country/list',
       }),
-      transformResponse: (response: CommonResponse<string[]>) => response.data
-    })
-  })
-})
+      providesTags: ['countryTag'],
+      transformResponse: transformCountryListResponse,
+    }),
+    addCountry: builder.mutation<CommonResponse<CountryList>, AddValue>({
+      queryFn: async (body, _api, _extraOptions, baseQuery) => {
+        try {
+          const res = (await baseQuery({
+            url: 'country',
+            method: 'POST',
+            body,
+          })) as unknown as CommonResponse<CountryList>;
+          return { data: res };
+        } catch (error) {
+          return { error: error as AxiosError };
+        }
+      },
+      invalidatesTags: ['countryTag'],
+    }),
+    getContactTypeList: builder.query<ContactTypeList, void>({
+      query: () => ({
+        url: 'contact-type/list',
+      }),
+      transformResponse: transformContactTypeListResponse,
+      providesTags: ['contactTypeTag'],
+    }),
+    addContactType: builder.mutation<CommonResponse<ContactTypeList>, AddValue>({
+      queryFn: async (body, _api, _extraOptions, baseQuery) => {
+        try {
+          const res = (await baseQuery({
+            url: 'contact-type',
+            method: 'POST',
+            body,
+          })) as unknown as CommonResponse<ContactTypeList>;
+          return { data: res };
+        } catch (error) {
+          return { error: error as AxiosError };
+        }
+      },
+      invalidatesTags: ['contactTypeTag'],
+    }),
+  }),
+});
 
-export const {useGetCountryListQuery} = baseApi;
-
+export const {
+  useGetCountryListQuery,
+  useAddCountryMutation,
+  useGetContactTypeListQuery,
+  useAddContactTypeMutation,
+} = baseApi;

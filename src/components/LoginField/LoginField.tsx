@@ -1,11 +1,17 @@
-import { Input } from "antd"
-import FormItem from "antd/es/form/FormItem"
-import { loginValidation } from "@/constants"
+import { Form, Input } from 'antd';
+
+import { loginValidation } from '@/constants';
 
 export const LoginField = () => {
-  return(
-    <FormItem rules={[...loginValidation]} name='login'>
+  return (
+    <Form.Item
+      rules={[...loginValidation]}
+      name="login"
+      label="Логин"
+      validateTrigger="onSubmit"
+      validateFirst
+    >
       <Input />
-    </FormItem>
-  )
-}
+    </Form.Item>
+  );
+};

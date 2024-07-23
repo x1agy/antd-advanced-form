@@ -1,0 +1,11 @@
+.rowHolder{
+    margin-bottom: 16px;
+}
+
+.buttonGroup{
+    display: flex;
+
+    &_button{
+        flex: 1;
+    }
+}

@@ -1,17 +1,22 @@
-import { BaseQueryFn } from "@reduxjs/toolkit/query";
-import axios, { AxiosError, AxiosRequestConfig, Method } from "axios";
+import { BaseQueryFn } from '@reduxjs/toolkit/query';
+import axios, { AxiosError, AxiosRequestConfig, Method } from 'axios';
 
 interface AxiosBaseQueryArgs {
   method?: Method;
   url: string;
   body?: unknown;
-  params?: Record<string, (string | number | undefined | null) | (string | number | undefined | null)[]>;
+  params?: Record<
+    string,
+    (string | number | undefined | null) | (string | number | undefined | null)[]
+  >;
   headers?: AxiosRequestConfig['headers'];
 }
 
 type AxiosBaseQuery = BaseQueryFn<AxiosBaseQueryArgs, unknown, AxiosError<unknown>>;
 
-export const apiClient = axios.create({ baseURL: '/commonTask' });
+export const apiClient = axios.create({
+  baseURL: '/ant-forms',
+});
 
 export const createApiBaseQuery =
   (basePath = ''): AxiosBaseQuery =>
